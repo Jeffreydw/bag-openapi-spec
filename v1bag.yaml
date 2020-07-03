@@ -1,0 +1,2416 @@
+---
+openapi: "3.0.0"
+servers:
+- url: "https://bag.basisregistraties.overheid.nl/api/v1"
+info:
+  version: "1.1.0"
+  title: "Basisregistratie Adressen en Gebouwen (BAG)"
+  description: "Om ervoor te zorgen dat het Kadaster haar dienstverlening zo goed\
+    \ mogelijk aan kan bieden is de BAG API momenteel alleen bruikbaar met behulp\
+    \ van een gratis basisregistraties API-key.\nDeze key wordt enkel gebruikt om\
+    \ inzicht te krijgen in het gebruik van de API (bijvoorbeeld welke coördinatenstelsels\
+    \ en filtermogelijkheden het populairst zijn) en om gebruikers bij incidenten\
+    \ (veroorzaakte piekbelasting,  storingen, etc.) en backwards incompatible wijzigingen\
+    \ (versie updates,  deprecation periods, etc.) tijdig adequate feedback te kunnen\
+    \ geven.\nEen basisregistraties API-key kan verkregen worden door een e-mail te\
+    \ sturen naar dataplatform@kadaster.nl en kan gebruikt worden voor zowel de BAG\
+    \ API als de BRT API. Om onze dienstverlening in de toekomst te kunnen verbeteren\
+    \ en aan te laten sluiten bij onze gebruikers stellen wij het op prijs als je\
+    \ ook laat weten wie je bent en wat je motivatie is om deze API te gebruiken,\
+    \ maar dat is uiteraard niet verplicht.\nHet proces om een API-key aan te vragen\
+    \ wordt binnenkort geautomatiseerd, waardoor een e-mail niet meer nodig is. Dit\
+    \ en andere features op de roadmap van de BAG API vind je op het PDOK forum: https://geoforum.nl/c/datasets/bag.\
+    \ Dit is tevens de plek voor feature requests, bug reports, inhoudelijke vragen\
+    \ over de data, technische vragen over het gebruik van de API, of andere zaken/discussies\
+    \ rondom de BAG.\n__De daadwerkelijk opgevraagde data wordt niet gelogd, de manier\
+    \ waarop wel. Denk hierbij aan request headers zoals `Accept` en logging van bad\
+    \ requests om de gebruiksvriendelijkheid van onze API te kunnen toetsen. Voor\
+    \ vragen/opmerkingen hierover kun je terecht op https://geoforum.nl/c/datasets/bag.__\n"
+  contact:
+    email: "dataplatform@kadaster.nl"
+    name: "Kadaster"
+    url: "https://www.kadaster.nl"
+tags:
+- name: "Pand"
+  description: "Het Pand API endpoint levert informatie aangaande één of meer instanties\
+    \ van een Pand: Een pand is een gebouw waar je in kunt en dat je af kan sluiten.\
+    \ Het gebouw staat altijd op de grond."
+- name: "Ligplaats"
+  description: "Het Ligplaats API endpoint levert informatie aangaande één of meer\
+    \ instanties van een Ligplaats: Een ligplaats is een vaste plaats in het water\
+    \ waar een vaartuig langdurig mag liggen. Soms hoort er ook een oever bij deze\
+    \ ligplaats. De gemeente heeft de ligplaats aangewezen."
+- name: "Standplaats"
+  description: "Het Standplaats API endpoint levert informatie aangaande één of meer\
+    \ instanties van een Standplaats: Een standplaats is een door de gemeente aangewezen\
+    \ plek voor verplaatsbare woon-, werk- of recreatieve doeleinden."
+- name: "Verblijfsobject"
+  description: "Het Verblijfsobject API endpoint levert informatie aangaande één of\
+    \ meer instanties van een Verblijfsobject: Een verblijfsobject is zelfstandige\
+    \ ruimte in een pand."
+- name: "Openbare ruimte"
+  description: "Het Openbare ruimte API endpoint levert informatie aangaande één of\
+    \ meer instanties van een Openbare ruimte: Een openbare ruimte is een verzamelnaam\
+    \ voor alle buitenruimten die een naam hebben gekregen van de gemeente."
+- name: "Nummeraanduiding"
+  description: "Het Nummeraanduiding API endpoint levert informatie aangaande één\
+    \ of meer instanties van een Nummeraanduiding: Een nummeraanduiding is het nummer\
+    \ dat de gemeente heeft gegeven aan een verblijfsobject, standplaats of ligplaats.\
+    \ Het nummer bestaat uit een huisnummer, huisletter en huisnummertoevoeging."
+- name: "Woonplaats"
+  description: "Het Woonplaats API endpoint levert informatie aangaande één of meer\
+    \ instanties van een Woonplaats: Een woonplaats is een gedeelte van het grondgebied\
+    \ van een gemeente."
+paths:
+  /panden:
+    get:
+      tags:
+      - "Pand"
+      summary: "Zoeken op één of meer instanties van een pand"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/pandCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+    post:
+      tags:
+      - "Pand"
+      summary: "Geografisch zoeken op één of meer instanties van een pand"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      - $ref: "#/components/parameters/contentType"
+      - $ref: "#/components/parameters/contentCrs"
+      requestBody:
+        $ref: "#/components/requestBodies/GeoBody"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/pandCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /panden/{id}:
+    get:
+      tags:
+      - "Pand"
+      summary: "Een enkele instantie van een pand opvragen"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/pand"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /panden/{id}/voorkomens:
+    get:
+      tags:
+      - "Pand"
+      summary: "Alle voorkomens van een instantie van een pand opvragen"
+      parameters:
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/pandVoorkomensCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /ligplaatsen:
+    get:
+      tags:
+      - "Ligplaats"
+      summary: "Zoeken op één of meer instanties van een ligplaats"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/ligplaatsCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+    post:
+      tags:
+      - "Ligplaats"
+      summary: "Geografisch zoeken op één of meer instanties van een ligplaats"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      - $ref: "#/components/parameters/contentType"
+      - $ref: "#/components/parameters/contentCrs"
+      requestBody:
+        $ref: "#/components/requestBodies/GeoBody"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/ligplaatsCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /ligplaatsen/{id}:
+    get:
+      tags:
+      - "Ligplaats"
+      summary: "Een enkele instantie van een ligplaats opvragen"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/ligplaats"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /ligplaatsen/{id}/voorkomens:
+    get:
+      tags:
+      - "Ligplaats"
+      summary: "Alle voorkomens van een instantie van een ligplaats opvragen"
+      parameters:
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/ligplaatsVoorkomensCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /standplaatsen:
+    get:
+      tags:
+      - "Standplaats"
+      summary: "Zoeken op één of meer instanties van een standplaats"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/standplaatsCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+    post:
+      tags:
+      - "Standplaats"
+      summary: "Geografisch zoeken op één of meer instanties van een standplaats"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      - $ref: "#/components/parameters/contentType"
+      - $ref: "#/components/parameters/contentCrs"
+      requestBody:
+        $ref: "#/components/requestBodies/GeoBody"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/standplaatsCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /standplaatsen/{id}:
+    get:
+      tags:
+      - "Standplaats"
+      summary: "Een enkele instantie van een standplaats opvragen"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/standplaats"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /standplaatsen/{id}/voorkomens:
+    get:
+      tags:
+      - "Standplaats"
+      summary: "Alle voorkomens van een instantie van een standplaats opvragen"
+      parameters:
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/standplaatsVoorkomensCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /verblijfsobjecten:
+    get:
+      tags:
+      - "Verblijfsobject"
+      summary: "Zoeken op één of meer instanties van een verblijfsobject"
+      parameters:
+      - name: "pandrelatering"
+        in: "query"
+        required: false
+        description: "Filtert op verblijfsobjecten behorende bij de opgegeven pandrelatering"
+        schema:
+          type: "string"
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/verblijfsobjectCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+    post:
+      tags:
+      - "Verblijfsobject"
+      summary: "Geografisch zoeken op één of meer instanties van een verblijfsobject"
+      parameters:
+      - name: "pandrelatering"
+        in: "query"
+        required: false
+        description: "Filtert op verblijfsobjecten behorende bij de opgegeven pandrelatering"
+        schema:
+          type: "string"
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      - $ref: "#/components/parameters/contentType"
+      - $ref: "#/components/parameters/contentCrs"
+      requestBody:
+        $ref: "#/components/requestBodies/GeoBody"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/verblijfsobjectCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /verblijfsobjecten/{id}:
+    get:
+      tags:
+      - "Verblijfsobject"
+      summary: "Een enkele instantie van een verblijfsobject opvragen"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/verblijfsobject"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /verblijfsobjecten/{id}/voorkomens:
+    get:
+      tags:
+      - "Verblijfsobject"
+      summary: "Alle voorkomens van een instantie van een verblijfsobject opvragen"
+      parameters:
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/verblijfsobjectVoorkomensCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /openbare-ruimtes:
+    get:
+      tags:
+      - "Openbare ruimte"
+      summary: "Zoeken op één of meer instanties van een openbare ruimte"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/openbareruimteCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /openbare-ruimtes/{id}:
+    get:
+      tags:
+      - "Openbare ruimte"
+      summary: "Een enkele instantie van een openbare ruimte opvragen"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/openbareruimte"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /openbare-ruimtes/{id}/voorkomens:
+    get:
+      tags:
+      - "Openbare ruimte"
+      summary: "Alle voorkomens van een instantie van een openbare ruimte opvragen"
+      parameters:
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/openbareruimteVoorkomensCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /nummeraanduidingen:
+    get:
+      tags:
+      - "Nummeraanduiding"
+      summary: "Zoeken op één of meer instanties van een nummeraanduiding"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - name: "postcode"
+        in: "query"
+        required: false
+        description: "Filtert op objecten met de opgegeven postcode (in het zogenaamde\
+          \ `P6` formaat: 1234AB)"
+        schema:
+          type: "string"
+      - name: "huisnummer"
+        in: "query"
+        required: false
+        description: "Filtert op objecten met het opgegeven huisnummer (enkel het\
+          \ numerieke nummer, geen toevoegingen)"
+        schema:
+          type: "number"
+      - name: "huisletter"
+        in: "query"
+        required: false
+        description: "Filtert op objecten met de opgegeven huisletter"
+        schema:
+          type: "string"
+      - name: "huisnummertoevoeging"
+        in: "query"
+        required: false
+        description: "Filtert op objecten met de opgegeven huisnummertoevoeging"
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/nummeraanduidingCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /nummeraanduidingen/{id}:
+    get:
+      tags:
+      - "Nummeraanduiding"
+      summary: "Een enkele instantie van een nummeraanduiding opvragen"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/nummeraanduiding"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /nummeraanduidingen/{id}/voorkomens:
+    get:
+      tags:
+      - "Nummeraanduiding"
+      summary: "Alle voorkomens van een instantie van een nummeraanduiding opvragen"
+      parameters:
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/nummeraanduidingVoorkomensCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /woonplaatsen:
+    get:
+      tags:
+      - "Woonplaats"
+      summary: "Zoeken op één of meer instanties van een woonplaats"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/woonplaatsCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+    post:
+      tags:
+      - "Woonplaats"
+      summary: "Geografisch zoeken op één of meer instanties van een woonplaats"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/page"
+      - $ref: "#/components/parameters/pageSize"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      - $ref: "#/components/parameters/contentType"
+      - $ref: "#/components/parameters/contentCrs"
+      requestBody:
+        $ref: "#/components/requestBodies/GeoBody"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/woonplaatsCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+            X-Pagination-Limit:
+              $ref: "#/components/headers/X-Pagination-Limit"
+            X-Pagination-Page:
+              $ref: "#/components/headers/X-Pagination-Page"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /woonplaatsen/{id}:
+    get:
+      tags:
+      - "Woonplaats"
+      summary: "Een enkele instantie van een woonplaats opvragen"
+      parameters:
+      - $ref: "#/components/parameters/geldigOp"
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      - $ref: "#/components/parameters/acceptCrs"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/woonplaats"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+            Content-Crs:
+              $ref: "#/components/headers/Content-Crs"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+  /woonplaatsen/{id}/voorkomens:
+    get:
+      tags:
+      - "Woonplaats"
+      summary: "Alle voorkomens van een instantie van een woonplaats opvragen"
+      parameters:
+      - $ref: "#/components/parameters/id"
+      - $ref: "#/components/parameters/apiKey"
+      - $ref: "#/components/parameters/accept"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/hal+json:
+              schema:
+                $ref: "#/components/schemas/woonplaatsVoorkomensCollection"
+          headers:
+            API-Version:
+              $ref: "#/components/headers/API-Version"
+        "400":
+          $ref: "#/components/responses/400"
+        "401":
+          $ref: "#/components/responses/401"
+        "406":
+          $ref: "#/components/responses/406"
+        "503":
+          $ref: "#/components/responses/503"
+components:
+  headers:
+    API-Version:
+      description: "Versie van de API"
+      schema:
+        type: "string"
+    Content-Crs:
+      description: "CRS van de teruggegeven geometrie"
+      schema:
+        default: "epsg:4258"
+        enum:
+        - "epsg:4258"
+        - "epsg:28992"
+        type: "string"
+    X-Pagination-Limit:
+      description: "Aantal Objecten per pagina"
+      schema:
+        format: "int32"
+        type: "integer"
+    X-Pagination-Page:
+      description: "Nummer van de huidige pagina (paginanummering start bij 1)"
+      schema:
+        format: "int32"
+        type: "integer"
+  parameters:
+    accept:
+      name: "Accept"
+      in: "header"
+      required: false
+      description: "Accept header voor Content-Negotiation. Op dit moment wordt alleen\
+        \ `application/hal+json` ondersteund welke ook de standaard is."
+      schema:
+        type: "string"
+        default: "application/hal+json"
+    acceptCrs:
+      description: "Gewenste CRS van de coördinaten in de response"
+      in: "header"
+      name: "Accept-Crs"
+      required: false
+      schema:
+        default: "epsg:4258"
+        enum:
+        - "epsg:4258"
+        - "epsg:28992"
+        type: "string"
+    apiKey:
+      name: "X-Api-Key"
+      in: "header"
+      required: true
+      description: "Geldige API Key om deze request uit te kunnen voeren."
+      schema:
+        type: "string"
+    contentCrs:
+      description: "Coordinaatreferentiesysteem van de meegegeven geometrie"
+      in: "header"
+      name: "Content-Crs"
+      required: false
+      schema:
+        default: "epsg:4258"
+        enum:
+        - "epsg:4258"
+        - "epsg:28992"
+        type: "string"
+    contentType:
+      description: "Media type van het request"
+      in: "header"
+      name: "Content-Type"
+      required: false
+      schema:
+        type: "string"
+    geldigOp:
+      name: "geldigOp"
+      in: "query"
+      required: false
+      description: "Filtert op objecten die geldig zijn op de opgegeven datum `JJJJ-MM-DD`"
+      schema:
+        type: "string"
+        format: "date"
+    id:
+      name: "id"
+      in: "path"
+      description: "Identifier"
+      required: true
+      schema:
+        type: "string"
+    page:
+      description: "Paginanummer voor paginering. Gebruik het `_links.next.href` object\
+        \ om te navigeren."
+      in: "query"
+      name: "page"
+      required: false
+      schema:
+        default: 1
+        format: "int32"
+        minimum: 1
+        type: "integer"
+    pageSize:
+      description: "Aantal resultaten per pagina"
+      in: "query"
+      name: "pageSize"
+      required: false
+      schema:
+        default: 20
+        enum:
+        - 10
+        - 20
+        - 50
+        - 100
+        format: "int32"
+        type: "integer"
+  requestBodies:
+    GeoBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: "object"
+            properties:
+              geometrie:
+                type: "object"
+                oneOf:
+                - $ref: "#/components/schemas/Intersects"
+                - $ref: "#/components/schemas/Contains"
+                - $ref: "#/components/schemas/Within"
+  responses:
+    "400":
+      content:
+        application/hal+json:
+          schema:
+            $ref: "#/components/schemas/ExtendedError"
+      description: "Bad request. Je request body bevat geen geldige JSON of de query\
+        \ wordt niet ondersteund door de API."
+      headers:
+        API-Version:
+          $ref: "#/components/headers/API-Version"
+    "401":
+      content:
+        application/hal+json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: "Unauthorized. Je hebt waarschijnlijk geen geldige `X-Api-Key`\
+        \ header meegestuurd."
+      headers:
+        API-Version:
+          $ref: "#/components/headers/API-Version"
+    "404":
+      content:
+        application/hal+json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: "Not found"
+      headers:
+        API-Version:
+          $ref: "#/components/headers/API-Version"
+    "406":
+      content:
+        application/hal+json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: "Not Acceptable. Je hebt waarschijnlijk een gewenst formaat met\
+        \ de `Accept` header verstuurd welke niet ondersteund wordt. De API kan momenteel\
+        \ alleen `application/hal+json` terugsturen."
+      headers:
+        API-Version:
+          $ref: "#/components/headers/API-Version"
+    "503":
+      content:
+        application/hal+json:
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: "Service Unavailable. Er vindt mogelijk (gepland) onderhoud of\
+        \ een storing plaats."
+      headers:
+        API-Version:
+          $ref: "#/components/headers/API-Version"
+  schemas:
+    hoofdadres:
+      type: "object"
+      required:
+      - "href"
+      description: "Een hoofdadres is het primaire adres van een gebouw of plek."
+      properties:
+        href:
+          type: "string"
+          description: "Link naar een bijbehorend hoofdadres."
+          example: "http://bag.basisregistraties.overheid.nl/bag/id/nummeraanduidingen/0150200000036467"
+    nevenadres:
+      type: "array"
+      description: "Een lijst van nevenadressen"
+      items:
+        type: "object"
+        description: "Een nevenadres is een aanvullend adres dat aan een verblijfsobject\
+          \ gegeven kan worden als deze meerdere ingangen heeft aan verschillende\
+          \ straten."
+        required:
+        - "href"
+        properties:
+          href:
+            type: "string"
+            description: "Link naar een bijbehorend nevenadres."
+            example: "http://bag.basisregistraties.overheid.nl/bag/id/nummeraanduidingen/0150200000036467"
+    geldigVoorkomen:
+      type: "object"
+      required:
+      - "beginGeldigheid"
+      - "eindGeldigheid"
+      - "inOnderzoek"
+      - "aanduidingInactief"
+      - "aanduidingCorrectie"
+      - "geconstateerd"
+      - "_embedded"
+      description: "Een voorkomen is een combinatie van gegevens die geldig zijn op\
+        \ grond van één adminsitratieve gebeurtenis, totdat één of meerdere gegevens\
+        \ gewijzigd worden."
+      properties:
+        beginGeldigheid:
+          type: "string"
+          format: "date"
+          description: "Een ingangsdatum is de begindatum vanaf wanneer een gegeven\
+            \ geldig is."
+          example: "2016-12-21"
+        eindGeldigheid:
+          format: "date"
+          description: "Een ingangsdatum is de begindatum vanaf wanneer een gegeven\
+            \ geldig is."
+          example: "2016-12-22"
+          nullable: true
+          type: "string"
+        inOnderzoek:
+          type: "boolean"
+          description: "In onderzoek betekent dat onderzocht wordt of gegevens kloppen."
+          example: false
+        aanduidingInactief:
+          type: "boolean"
+          description: "Voorkomens van objecten met een begindatum in de toekomst\
+            \ die zijn gemuteerd. Ze maken daarmee geen onderdeel meer uit van de\
+            \ levenscyclus."
+          example: false
+        aanduidingCorrectie:
+          type: "number"
+          description: "Een inactief voorkomen als gevolg van synchronisatie tussen\
+            \ bronhouder en de Landelijke Voorziening BAG."
+          example: 0
+        geconstateerd:
+          type: "boolean"
+          example: false
+        _embedded:
+          type: "object"
+          required:
+          - "bron"
+          properties:
+            bron:
+              $ref: "#/components/schemas/bron"
+    bron:
+      type: "object"
+      required:
+      - "documentnummer"
+      - "documentdatum"
+      properties:
+        documentnummer:
+          type: "string"
+          description: "De unieke aanduiding van de vindplaats van een document binnen\
+            \ een organisatie."
+          example: "SLM/013164"
+        documentdatum:
+          type: "string"
+          description: "De datum waarop het brondocument is vastgesteld, op basis\
+            \ waarvan een opname, mutatie of een verwijdering van gegevens ten aanzien\
+            \ van een object heeft plaatsgevonden."
+          format: "date"
+          example: "2010-05-19"
+    pand:
+      type: "object"
+      required:
+      - "identificatiecode"
+      - "oorspronkelijkBouwjaar"
+      - "status"
+      - "_links"
+      - "_embedded"
+      description: "Een pand is een gebouw waar je in kunt en dat je af kan sluiten.\
+        \ Het gebouw staat altijd op de grond."
+      properties:
+        identificatiecode:
+          type: "string"
+          description: "Een identificatiecode van een pand is een authentiek gegeven\
+            \ en een unieke aanduiding van het pand."
+          example: 3.100000118018E12
+        oorspronkelijkBouwjaar:
+          type: "integer"
+          description: "Een bouwjaar is een authentiek gegeven met betrekking tot\
+            \ het jaar dat een pand bouwkundig gereed is of wordt opgeleverd."
+          example: 1965
+        status:
+          type: "string"
+          description: "Een codering van de verschillende waarden die de status van\
+            \ een pand kan aannemen."
+          example: "PandInGebruik"
+        _links:
+          type: "object"
+          required:
+          - "self"
+          - "voorkomens"
+          - "verblijfsobjecten"
+          description: "Links voor dit pand"
+          properties:
+            self:
+              type: "object"
+              description: "Link naar de resource van het pand"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de resource van het pand"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/panden/0003100000118018"
+            voorkomens:
+              type: "object"
+              description: "Voorkomens behorende bij dit pand"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar een bijbehorend voorkomen"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/panden/0003100000118018/voorkomens"
+            verblijfsobjecten:
+              type: "object"
+              description: "Verblijfsobjecten gerelateerd aan het pand"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de query op de verblijfsobjecten gerelateerd\
+                    \ aan het pand"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/verblijfsobjecten?pandrelatering=0200100000801760"
+        _embedded:
+          type: "object"
+          required:
+          - "geometrie"
+          - "geldigVoorkomen"
+          properties:
+            geometrie:
+              $ref: "#/components/schemas/GeoJSONGeometry"
+            geldigVoorkomen:
+              $ref: "#/components/schemas/geldigVoorkomen"
+    pandCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      - "_links"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "panden"
+          properties:
+            panden:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/pand"
+        _links:
+          $ref: "#/components/schemas/CollectieLinks"
+    ligplaats:
+      type: "object"
+      required:
+      - "identificatiecode"
+      - "status"
+      - "_links"
+      - "_embedded"
+      properties:
+        identificatiecode:
+          type: "string"
+          description: "Een identificatiecode van een ligplaats is een authentiek\
+            \ gegeven en een unieke aanduiding van de ligplaats."
+          example: 3.29020000000153E14
+        status:
+          type: "string"
+          description: "Een aanduiding van alle waarden die de status van een ligplaats\
+            \ en een standplaats kan aannemen."
+          example: "PlaatsAangewezen"
+        _links:
+          type: "object"
+          required:
+          - "self"
+          - "hoofdadres"
+          - "nevenadres"
+          - "voorkomens"
+          description: "Links voor deze ligplaats"
+          properties:
+            self:
+              type: "object"
+              description: "Link naar de resource van de ligplaats"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de resource van de ligplaats"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/ligplaatsen/0329020000000153"
+            hoofdadres:
+              $ref: "#/components/schemas/hoofdadres"
+            nevenadres:
+              $ref: "#/components/schemas/nevenadres"
+            voorkomens:
+              type: "object"
+              description: "Voorkomens behorende bij deze ligplaats"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Links naar de bijbehorende voorkomens"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/ligplaatsen/0329020000000153/voorkomens"
+        _embedded:
+          type: "object"
+          required:
+          - "geometrie"
+          - "geldigVoorkomen"
+          properties:
+            geometrie:
+              $ref: "#/components/schemas/GeoJSONGeometry"
+            geldigVoorkomen:
+              $ref: "#/components/schemas/geldigVoorkomen"
+    ligplaatsCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      - "_links"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "ligplaatsen"
+          properties:
+            ligplaatsen:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/ligplaats"
+        _links:
+          $ref: "#/components/schemas/CollectieLinks"
+    standplaats:
+      type: "object"
+      required:
+      - "identificatiecode"
+      - "status"
+      - "_links"
+      - "_embedded"
+      properties:
+        identificatiecode:
+          type: "string"
+          description: "Een identificatiecode van een standplaats is een authentiek\
+            \ gegeven en een unieke aanduiding van de standplaats."
+          example: 8.51030000000014E14
+        status:
+          type: "string"
+          description: "Een aanduiding van alle waarden die de status van een ligplaats\
+            \ en een standplaats kan aannemen."
+          example: "PlaatsAangewezen"
+        _links:
+          type: "object"
+          description: "Links voor deze standplaats"
+          required:
+          - "self"
+          - "hoofdadres"
+          - "nevenadres"
+          - "voorkomens"
+          properties:
+            self:
+              type: "object"
+              description: "Link naar de resource van de standplaats"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de resource van de standplaats"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/standplaatsen/0851030000000014"
+            hoofdadres:
+              $ref: "#/components/schemas/hoofdadres"
+            nevenadres:
+              $ref: "#/components/schemas/nevenadres"
+            voorkomens:
+              type: "object"
+              description: "Voorkomens behorende bij deze standplaats"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar een bijbehorend voorkomen"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/standplaatsen/0851030000000014/voorkomens"
+        _embedded:
+          type: "object"
+          required:
+          - "geometrie"
+          - "geldigVoorkomen"
+          properties:
+            geometrie:
+              $ref: "#/components/schemas/GeoJSONGeometry"
+            geldigVoorkomen:
+              $ref: "#/components/schemas/geldigVoorkomen"
+    standplaatsCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      - "_links"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "standplaatsen"
+          properties:
+            standplaatsen:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/standplaats"
+        _links:
+          $ref: "#/components/schemas/CollectieLinks"
+    verblijfsobject:
+      type: "object"
+      required:
+      - "identificatiecode"
+      - "oppervlakte"
+      - "status"
+      - "_links"
+      - "_embedded"
+      properties:
+        identificatiecode:
+          type: "string"
+          description: "Een identificatiecode van een verblijfsobject is een authentiek\
+            \ gegeven en een unieke aanduiding van het verblijfsobject."
+          example: 3.010000128296E12
+        oppervlakte:
+          type: "integer"
+          description: "Een oppervlakte is de gebruiksoppervlakte van een verblijfsobject\
+            \ en een authentiek gegeven"
+          example: 302
+        status:
+          type: "string"
+          description: "Een aanduiding van alle waarden die de status van een verblijfsobject\
+            \ kan aannemen."
+          example: "VerblijfsobjectInGebruik"
+        _links:
+          type: "object"
+          description: "Links voor dit verblijfsobject"
+          required:
+          - "self"
+          - "hoofdadres"
+          - "nevenadres"
+          - "pandrelateringen"
+          - "voorkomens"
+          properties:
+            self:
+              type: "object"
+              description: "Link naar de resource van het verblijfsobject"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de resource van het verblijfsobject"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/verblijfsobjecten/0329020000000153"
+            hoofdadres:
+              $ref: "#/components/schemas/hoofdadres"
+            nevenadres:
+              $ref: "#/components/schemas/nevenadres"
+            pandrelateringen:
+              type: "array"
+              description: "Een lijst van panden behorende bij dit verblijfsobject"
+              items:
+                type: "object"
+                required:
+                - "href"
+                properties:
+                  href:
+                    type: "string"
+                    description: "Link naar een bijbehorend pand"
+                    example: "https://bag.basisregistraties.overheid.nl/api/v1/panden/0003100000118018"
+            voorkomens:
+              type: "object"
+              description: "Een lijst van voorkomens behorende bij dit verblijfsobject"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de bijbehorende voorkomens"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/verblijfsobjecten/0003100000118018/voorkomens"
+        _embedded:
+          type: "object"
+          required:
+          - "geometrie"
+          - "geldigVoorkomen"
+          properties:
+            geometrie:
+              $ref: "#/components/schemas/GeoJSONGeometry"
+            geldigVoorkomen:
+              $ref: "#/components/schemas/geldigVoorkomen"
+    verblijfsobjectCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      - "_links"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "verblijfsobjecten"
+          properties:
+            verblijfsobjecten:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/verblijfsobject"
+        _links:
+          $ref: "#/components/schemas/CollectieLinks"
+    openbareruimte:
+      type: "object"
+      required:
+      - "identificatiecode"
+      - "type"
+      - "naam"
+      - "verkorteNaam"
+      - "status"
+      - "_links"
+      - "_embedded"
+      properties:
+        identificatiecode:
+          type: "string"
+          description: "Een identificatiecode van een openbare ruimte is een authentiek\
+            \ gegeven en een unieke aanduiding van de openbare ruimte."
+          example: 7.4300000330686E13
+        type:
+          type: "array"
+          items:
+            type: "string"
+            description: "Een type openbare ruimte is het soort openbare ruimte."
+            example: "Weg"
+        naam:
+          type: "string"
+          description: "De naam openbare ruimte is de naam die de gemeente heeft gegeven\
+            \ aan een openbare ruimte."
+          example: "IJzerweg"
+        verkorteNaam:
+          type: "string"
+          description: "Een verkorte naam van de openbare ruimte als deze langer dan\
+            \ 24 posities is."
+          example: "Pastoor M van Beekstraat"
+          nullable: true
+        status:
+          type: "string"
+          description: "Een aanduiding van alle waarden die de status van een openbare\
+            \ ruimte of een nummeraanduiding kan aannemen."
+          example: "NaamgevingUitgegeven"
+        _links:
+          type: "object"
+          description: "Links voor deze openbare ruimte"
+          required:
+          - "self"
+          - "bijbehorendeWoonplaats"
+          - "voorkomens"
+          properties:
+            self:
+              type: "object"
+              description: "Link naar de resource van de openbare ruimte"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de resource van de openbare ruimte"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/openbare-ruimtes/0329020000000153"
+            bijbehorendeWoonplaats:
+              type: "object"
+              description: "Link naar de woonplaats bijbehorende bij deze openbare\
+                \ ruimte"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de woonplaats"
+                  example: "http://bag.basisregistraties.overheid.nl/bag/id/woonplaatsen/2186"
+            voorkomens:
+              type: "object"
+              description: "Een lijst van voorkomens behorende bij deze openbare ruimte"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar een bijbehorend voorkomen"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/openbare-ruimtes/2186/voorkomens"
+        _embedded:
+          type: "object"
+          required:
+          - "geldigVoorkomen"
+          properties:
+            geldigVoorkomen:
+              $ref: "#/components/schemas/geldigVoorkomen"
+    openbareruimteCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      - "_links"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "openbareRuimtes"
+          properties:
+            openbareRuimtes:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/openbareruimte"
+        _links:
+          $ref: "#/components/schemas/CollectieLinks"
+    nummeraanduiding:
+      type: "object"
+      required:
+      - "identificatiecode"
+      - "huisletter"
+      - "huisnummer"
+      - "huisnummertoevoeging"
+      - "postcode"
+      - "status"
+      - "_links"
+      - "_embedded"
+      properties:
+        identificatiecode:
+          type: "string"
+          description: "Een huisletter is een authentiek gegeven met betrekking tot\
+            \ een nummeraanduiding. Het is de lettering van een adresseerbaar object"
+          example: "0005200000035461"
+        huisletter:
+          type: "string"
+          description: "Een huisletter is een authentiek gegeven met betrekking tot\
+            \ een nummeraanduiding. Het is de lettering van een adresseerbaar object"
+          example: "A"
+          nullable: true
+        huisnummer:
+          type: "integer"
+          description: "Een huisnummer is een authentiek gegeven met betrekking tot\
+            \ een nummeraanduiding. Het is de nummering van een adresseerbaar object."
+          example: 45
+        huisnummertoevoeging:
+          type: "string"
+          description: "Een huisnummertoevoeging is een authentiek gegeven met betrekking\
+            \ tot een nummeraanduiding. Het is de toevoeging aan de nummering van\
+            \ een adresseerbaar object."
+          example: "1"
+          nullable: true
+        postcode:
+          type: "string"
+          description: "De postcode is een coderingssystematiek zoals ontwikkeld en\
+            \ beheerd door PostNL. Een postcode is een niet-authentiek gegeven met\
+            \ betrekking tot een nummeraanduiding"
+          example: "9781NR"
+          nullable: true
+        status:
+          type: "string"
+          description: "Een aanduiding van alle waarden die de status van een openbare\
+            \ ruimte of een nummeraanduiding kan aannemen."
+          example: "NaamgevingUitgegeven"
+        _links:
+          type: "object"
+          description: "Links voor deze nummeraanduiding"
+          required:
+          - "self"
+          - "bijbehorendeOpenbareRuimte"
+          - "voorkomens"
+          - "adresseerbaarObject"
+          properties:
+            self:
+              type: "object"
+              description: "Link naar de resource van de nummeraanduiding"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de resource van de nummeraanduiding"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/nummeraanduidingen/0005200000035461"
+            bijbehorendeOpenbareRuimte:
+              type: "object"
+              description: "Link naar de openbare ruimte behorende bij deze nummeraanduiding"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de openbare ruimte"
+                  example: "http://bag.basisregistraties.overheid.nl/bag/id/openbare-ruimtes/0005300000000090"
+            bijbehorendeWoonplaats:
+              type: "object"
+              description: "Link naar de woonplaats behorende bij deze nummeraanduiding"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de woonplaats"
+                  example: "http://bag.basisregistraties.overheid.nl/bag/id/woonplaatsen/0005300000000090\
+                    \                    "
+            voorkomens:
+              type: "object"
+              description: "Een lijst van voorkomens behorende bij deze nummeraanduiding"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar een bijbehorend voorkomen"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/nummeraanduidingen/0005200000035461/voorkomens"
+            adresseerbaarObject:
+              type: "object"
+              description: "Link naar het adresseerbare object, bijvoorbeeld standplaats,\
+                \ ligplaats of verblijfsObject behorende bij deze nummeraanduiding"
+              required:
+              - "href"
+              - "label"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar het adresseerbare object van de nummeraanduiding"
+                  example: "http://bag.basisregistraties.overheid.nl/bag/id/ligplaatsen/0003020000000007"
+                label:
+                  type: "string"
+                  example: "Ligplaats 0003020000000007"
+        _embedded:
+          type: "object"
+          required:
+          - "geldigVoorkomen"
+          properties:
+            geldigVoorkomen:
+              $ref: "#/components/schemas/geldigVoorkomen"
+    nummeraanduidingCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      - "_links"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "nummeraanduidingen"
+          properties:
+            nummeraanduidingen:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/nummeraanduiding"
+        _links:
+          $ref: "#/components/schemas/CollectieLinks"
+    woonplaats:
+      type: "object"
+      required:
+      - "identificatiecode"
+      - "naam"
+      - "status"
+      - "_links"
+      - "_embedded"
+      properties:
+        identificatiecode:
+          type: "string"
+          description: "Een identificatiecode van een woonplaats is een authentiek\
+            \ gegeven zoals opgenomen in de landelijke woonplaatsentabel"
+          example: "1072"
+        naam:
+          type: "string"
+          description: "De naam van een woonplaats is de naam die de gemeente aan\
+            \ een woonplaats heeft gegeven."
+          example: "Harmelen"
+        status:
+          type: "string"
+          description: "Een aanduiding van alle waarden die de status van een woonplaats\
+            \ kan aannemen."
+          example: "WoonplaatsAangewezen"
+        _links:
+          type: "object"
+          description: "Links voor deze woonplaats"
+          required:
+          - "self"
+          - "voorkomens"
+          properties:
+            self:
+              type: "object"
+              description: "Link naar de resource van de woonplaats"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar de resource van de woonplaats"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/woonplaatsen/1072"
+            voorkomens:
+              type: "object"
+              description: "Een lijst van voorkomens behorende bij deze woonplaats"
+              required:
+              - "href"
+              properties:
+                href:
+                  type: "string"
+                  description: "Link naar een bijbehorend voorkomen"
+                  example: "https://bag.basisregistraties.overheid.nl/api/v1/woonplaatsen/1072/voorkomens"
+        _embedded:
+          type: "object"
+          required:
+          - "geometrie"
+          - "geldigVoorkomen"
+          properties:
+            geometrie:
+              $ref: "#/components/schemas/GeoJSONGeometry"
+            geldigVoorkomen:
+              $ref: "#/components/schemas/geldigVoorkomen"
+    woonplaatsCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      - "_links"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "woonplaatsen"
+          properties:
+            woonplaatsen:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/woonplaats"
+        _links:
+          $ref: "#/components/schemas/CollectieLinks"
+    pandVoorkomensCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "voorkomens"
+          properties:
+            voorkomens:
+              type: "array"
+              items:
+                type: "object"
+                allOf:
+                - $ref: "#/components/schemas/geldigVoorkomen"
+                - type: "object"
+                  required:
+                  - "_links"
+                  properties:
+                    _links:
+                      type: "object"
+                      description: "Links voor dit voorkomen"
+                      required:
+                      - "pand"
+                      properties:
+                        pand:
+                          type: "object"
+                          description: "Link naar het pand zoals dat geldig was op\
+                            \ de datum van dit voorkomen"
+                          required:
+                          - "href"
+                          properties:
+                            href:
+                              type: "string"
+                              example: "https://bag.basisregistraties.overheid.nl/api/v1/panden/0200100000001088?geldigOp=2017-01-25"
+    ligplaatsVoorkomensCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "voorkomens"
+          properties:
+            voorkomens:
+              type: "array"
+              items:
+                type: "object"
+                allOf:
+                - $ref: "#/components/schemas/geldigVoorkomen"
+                - type: "object"
+                  required:
+                  - "_links"
+                  properties:
+                    _links:
+                      type: "object"
+                      description: "Links voor dit voorkomen"
+                      required:
+                      - "ligplaats"
+                      properties:
+                        ligplaats:
+                          type: "object"
+                          description: "Link naar de ligplaats zoals dat geldig was\
+                            \ op de datum van dit voorkomen"
+                          required:
+                          - "href"
+                          properties:
+                            href:
+                              type: "string"
+                              example: "https://bag.basisregistraties.overheid.nl/api/v1/ligplaatsen/0200100000001088?geldigOp=2017-01-25"
+    standplaatsVoorkomensCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "voorkomens"
+          properties:
+            voorkomens:
+              type: "array"
+              items:
+                type: "object"
+                allOf:
+                - $ref: "#/components/schemas/geldigVoorkomen"
+                - type: "object"
+                  required:
+                  - "_links"
+                  properties:
+                    _links:
+                      type: "object"
+                      description: "Links voor dit voorkomen"
+                      required:
+                      - "standplaats"
+                      properties:
+                        standplaats:
+                          type: "object"
+                          description: "Link naar de standplaats zoals dat geldig\
+                            \ was op de datum van dit voorkomen"
+                          required:
+                          - "href"
+                          properties:
+                            href:
+                              type: "string"
+                              example: "https://bag.basisregistraties.overheid.nl/api/v1/standplaatsen/0200100000001088?geldigOp=2017-01-25"
+    verblijfsobjectVoorkomensCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "voorkomens"
+          properties:
+            voorkomens:
+              type: "array"
+              items:
+                type: "object"
+                allOf:
+                - $ref: "#/components/schemas/geldigVoorkomen"
+                - type: "object"
+                  required:
+                  - "_links"
+                  properties:
+                    _links:
+                      type: "object"
+                      description: "Links voor dit voorkomen"
+                      required:
+                      - "verblijfsobject"
+                      properties:
+                        verblijfsobject:
+                          type: "object"
+                          description: "Link naar het verblijfsobject zoals dat geldig\
+                            \ was op de datum van dit voorkomen"
+                          required:
+                          - "href"
+                          properties:
+                            href:
+                              type: "string"
+                              example: "https://bag.basisregistraties.overheid.nl/api/v1/verblijfsobjecten/0200100000001088?geldigOp=2017-01-25"
+    openbareruimteVoorkomensCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "voorkomens"
+          properties:
+            voorkomens:
+              type: "array"
+              items:
+                type: "object"
+                allOf:
+                - $ref: "#/components/schemas/geldigVoorkomen"
+                - type: "object"
+                  required:
+                  - "_links"
+                  properties:
+                    _links:
+                      type: "object"
+                      description: "Links voor dit voorkomen"
+                      required:
+                      - "openbareRuimte"
+                      properties:
+                        openbareRuimte:
+                          type: "object"
+                          description: "Link naar de openbare ruimte zoals dat geldig\
+                            \ was op de datum van dit voorkomen"
+                          required:
+                          - "href"
+                          properties:
+                            href:
+                              type: "string"
+                              example: "https://bag.basisregistraties.overheid.nl/api/v1/openbare-ruimtes/0200100000001088?geldigOp=2017-01-25"
+    nummeraanduidingVoorkomensCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "voorkomens"
+          properties:
+            voorkomens:
+              type: "array"
+              items:
+                type: "object"
+                allOf:
+                - $ref: "#/components/schemas/geldigVoorkomen"
+                - type: "object"
+                  required:
+                  - "_links"
+                  properties:
+                    _links:
+                      type: "object"
+                      description: "Links voor dit voorkomen"
+                      required:
+                      - "nummeraanduiding"
+                      properties:
+                        nummeraanduiding:
+                          type: "object"
+                          description: "Link naar de nummeraanduiding zoals dat geldig\
+                            \ was op de datum van dit voorkomen"
+                          required:
+                          - "href"
+                          properties:
+                            href:
+                              type: "string"
+                              example: "https://bag.basisregistraties.overheid.nl/api/v1/nummeraanduidingen/0200100000001088?geldigOp=2017-01-25"
+    woonplaatsVoorkomensCollection:
+      type: "object"
+      required:
+      - "_embedded"
+      properties:
+        _embedded:
+          type: "object"
+          required:
+          - "voorkomens"
+          properties:
+            voorkomens:
+              type: "array"
+              items:
+                type: "object"
+                allOf:
+                - $ref: "#/components/schemas/geldigVoorkomen"
+                - type: "object"
+                  required:
+                  - "_links"
+                  properties:
+                    _links:
+                      type: "object"
+                      description: "Links voor dit voorkomen"
+                      required:
+                      - "woonplaats"
+                      properties:
+                        woonplaats:
+                          type: "object"
+                          description: "Link naar de woonplaats zoals dat geldig was\
+                            \ op de datum van dit voorkomen"
+                          required:
+                          - "href"
+                          properties:
+                            href:
+                              type: "string"
+                              example: "https://bag.basisregistraties.overheid.nl/api/v1/woonplaatsen/0200100000001088?geldigOp=2017-01-25"
+    Intersects:
+      type: "object"
+      description: "'overlapt' en 'raakt' vallen hieronder"
+      properties:
+        intersects:
+          $ref: "#/components/schemas/GeoJSONGeometry"
+    Contains:
+      type: "object"
+      description: "Omsluit volledig"
+      properties:
+        contains:
+          $ref: "#/components/schemas/GeoJSONGeometry"
+    Within:
+      type: "object"
+      description: "Valt volledig binnen"
+      properties:
+        within:
+          $ref: "#/components/schemas/GeoJSONGeometry"
+    GeoJSONGeometry:
+      title: "GeoJSONGeometry"
+      type: "object"
+      discriminator:
+        propertyName: "type"
+      oneOf:
+      - $ref: "#/components/schemas/Point"
+      - $ref: "#/components/schemas/MultiPoint"
+      - $ref: "#/components/schemas/LineString"
+      - $ref: "#/components/schemas/MultiLineString"
+      - $ref: "#/components/schemas/Polygon"
+      - $ref: "#/components/schemas/MultiPolygon"
+    Geometry:
+      title: "Geometry"
+      description: "GeoJSON geometry"
+      required:
+      - "type"
+      type: "object"
+      properties:
+        type:
+          description: "The geometry type"
+          type: "string"
+          enum:
+          - "Point"
+          - "MultiPoint"
+          - "LineString"
+          - "MultiLineString"
+          - "Polygon"
+          - "MultiPolygon"
+          - "Feature"
+          - "FeatureCollection"
+      externalDocs:
+        url: "https://tools.ietf.org/html/rfc7946#section-3.1"
+    Point2D:
+      title: "Point2D"
+      description: "A 2D point"
+      type: "array"
+      items:
+        type: "number"
+      maxItems: 2
+      minItems: 2
+    Point:
+      description: "GeoJSON point geometry"
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/Geometry"
+      - required:
+        - "coordinates"
+        type: "object"
+        properties:
+          coordinates:
+            $ref: "#/components/schemas/Point2D"
+      externalDocs:
+        url: "https://tools.ietf.org/html/rfc7946#section-3.1.2"
+    MultiPoint:
+      description: "GeoJSON multi-point geometry"
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/Geometry"
+      - required:
+        - "coordinates"
+        type: "object"
+        properties:
+          coordinates:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/Point2D"
+      externalDocs:
+        url: "https://tools.ietf.org/html/rfc7946#section-3.1.3"
+    LineString:
+      description: "GeoJSON line-string geometry"
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/Geometry"
+      - required:
+        - "coordinates"
+        type: "object"
+        properties:
+          coordinates:
+            type: "array"
+            items:
+              $ref: "#/components/schemas/Point2D"
+            minItems: 2
+      externalDocs:
+        url: "https://tools.ietf.org/html/rfc7946#section-3.1.4"
+    MultiLineString:
+      description: "GeoJSON multi-line-string geometry"
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/Geometry"
+      - required:
+        - "coordinates"
+        type: "object"
+        properties:
+          coordinates:
+            type: "array"
+            items:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Point2D"
+      externalDocs:
+        url: "https://tools.ietf.org/html/rfc7946#section-3.1.5"
+    Polygon:
+      description: "GeoJSON polygon geometry"
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/Geometry"
+      - required:
+        - "coordinates"
+        type: "object"
+        properties:
+          coordinates:
+            type: "array"
+            items:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/Point2D"
+      externalDocs:
+        url: "https://tools.ietf.org/html/rfc7946#section-3.1.6"
+    MultiPolygon:
+      description: "GeoJSON multi-polygon geometry"
+      type: "object"
+      allOf:
+      - $ref: "#/components/schemas/Geometry"
+      - required:
+        - "coordinates"
+        type: "object"
+        properties:
+          coordinates:
+            type: "array"
+            items:
+              type: "array"
+              items:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/Point2D"
+      externalDocs:
+        url: "https://tools.ietf.org/html/rfc7946#section-3.1.7"
+    CollectieLinks:
+      type: "object"
+      required:
+      - "self"
+      properties:
+        self:
+          type: "object"
+          description: "Absolute link naar huidige pagina"
+          required:
+          - "href"
+          properties:
+            href:
+              type: "string"
+              format: "uri"
+              description: "URL van de link"
+              example: "https://bag.basisregistraties.overheid.nl/api/v1/your-api-resource?page=2"
+        prev:
+          type: "object"
+          description: "Absolute link naar vorige pagina ('null' als er geen vorige\
+            \ pagina is)"
+          required:
+          - "href"
+          nullable: true
+          properties:
+            href:
+              type: "string"
+              format: "uri"
+              description: "URL van de link"
+              example: "https://bag.basisregistraties.overheid.nl/api/v1/your-api-resource?page=1"
+        next:
+          type: "object"
+          description: "Absolute link naar volgende pagina ('null' als er geen volgende\
+            \ pagina is)"
+          required:
+          - "href"
+          properties:
+            href:
+              type: "string"
+              format: "uri"
+              description: "URL van de link"
+              example: "https://bag.basisregistraties.overheid.nl/api/v1/your-api-resource?page=3"
+    Error:
+      type: "object"
+      description: "Object gespecificeerd volgens https://tools.ietf.org/html/rfc7807."
+      required:
+      - "title"
+      - "status"
+      - "detail"
+      properties:
+        type:
+          type: "string"
+          description: "URI naar een pagina met meer informatie over deze foutmelding\
+            \ voor de ontwikkelaar."
+          example: "about:blank"
+        title:
+          type: "string"
+          example: "Not Found"
+        status:
+          type: "integer"
+          format: "int32"
+          example: "404"
+        detail:
+          type: "string"
+          example: "HTTP 404 Not Found"
+        instance:
+          type: "string"
+          example: "self"
+    ExtendedError:
+      type: "object"
+      description: "Object gespecificeerd volgens https://tools.ietf.org/html/rfc7807."
+      required:
+      - "title"
+      - "status"
+      - "detail"
+      - "invalidParams"
+      properties:
+        type:
+          type: "string"
+          description: "URI naar een pagina met meer informatie over deze foutmelding\
+            \ voor de ontwikkelaar."
+          example: "about:blank"
+        title:
+          type: "string"
+          example: "Bad Request"
+        status:
+          type: "integer"
+          format: "int32"
+          example: "400"
+        detail:
+          type: "string"
+          example: "Request parameters didn't validate."
+        instance:
+          type: "string"
+          example: "self"
+        invalidParams:
+          type: "array"
+          items:
+            type: "object"
+            required:
+            - "name"
+            - "reason"
+            properties:
+              name:
+                type: "string"
+                example: "validation.request.parameter.enum.invalid"
+              reason:
+                type: "string"
+                example: "Value 'epsg:dummy' for parameter 'Accept-Crs' is not allowed.\
+                  \ Allowed values are <[epsg:4258, epsg:28992]>."
+  securitySchemes:
+    apiKey:
+      type: "apiKey"
+      name: "X-Api-Key"
+      in: "header"
+      description: "De API-key die je hebt gekregen dient bij elke request naar de\
+        \ BAG API via de `X-Api-Key` request header meegestuurd te worden. Indien\
+        \ deze niet juist wordt meegestuurd, of het een ongeldige key betreft, zul\
+        \ je de foutmelding `401 Unauthorized` terugkrijgen.\n"
+security:
+- apiKey: []
